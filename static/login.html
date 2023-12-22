@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>AI狄仁杰</title>
+	<link rel="stylesheet" href="./static/css/loginstyle.css">
+	<link rel="shortcut icon" href="./static/img/720.ico">
+	<!-- <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script> -->
+    <script src="./static/js/code.jquery.com_jquery-3.7.0.min.js"></script>
+</head>
+
+<body style="background-image: url('./static/img/bg.jpg'), linear-gradient(hsla(145, 100%, 50%, 0.356),hsla(145, 100%, 50%, 0.356)); width: 100%;height: 100%; background-size: 100% 100%;background-blend-mode: lighten;">
+	<div class="box">
+		<form method="get" action="http://localhost:8090/home?id=dllg01073">
+			<h2>登录</h2>
+			<div class="inputBox">
+				<input type="text" required="required">
+				<span>账号</span>
+				<i></i>
+			</div>
+			<div class="inputBox">
+				<input type="password" required="required">
+				<span>密码</span>
+				<i></i>
+			</div>
+			<div class="links">
+				<a href="#">忘记密码 ?</a>
+				<!-- <a href="#">Signup</a> -->
+			</div>
+
+			<input type="submit" value="登录" id="login">
+		</form>
+	</div>
+
+	<script>
+		// function index(this){
+		// 	window.location.href="http://localhost:8090/index.html"
+		// }
+		$('#login').on('click',function(){
+			
+			// window.alert("nidenlu")
+			// $.ajax({
+			// 	type:'POST',
+			// 	url:'http://localhost:8090/login',
+			// 	dataType:"json",
+			// 	async:True,
+			// 	data:{
+			// 		id:"dllg01073",
+			// 		pswd:"123456",
+			// 	},
+			// 	success:function(data) {
+			// 		window.location.href = "http://localhost:8090/home"
+			// 	}
+
+			// })
+		})
+	</script>
+</body>
+
+</html>

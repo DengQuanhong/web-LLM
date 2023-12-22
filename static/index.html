@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>AI chat</title>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+    <script src="./static/js/code.jquery.com_jquery-3.7.0.min.js"></script>
+    <link rel='stylesheet' href='./static/css/index.css?id=3' type='text/css'/>
+    <link rel="shortcut icon" href="./static/img/720.ico">
+</head>
+<script>
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function changedom(data) {
+        // console.log("试一试"+$(data).id)
+        $(".li").removeClass("onli");
+        $(data).addClass('onli');
+        $('.ow').hide();
+        $("div.tmp").remove()
+        $('.dom').show("slow")
+
+
+        sessid_tag = document.getElementById("sessname")
+        console.log(sessid_tag)
+        onli = document.getElementsByClassName('onli')
+        sessid = onli[0].getAttribute('id')
+        console.log("sessid的值在change中是" + sessid)
+        sessid_tag.innerHTML = `会话【2023】00${sessid.slice(-2)}`
+
+        $(function () {
+
+            var ready_var = $.ajax({
+                type: "GET",
+                url: 'http://localhost:8090/api/chat?sessid=' + sessid,
+                success: function (data) {
+                    // ajaxLog('成功, 收到的数据: ' + JSON.stringify(data));
+                    // console.log(JSON.stringify(data));
+                    // 打印历史信息
+                    sessrun = document.getElementById("sesssrun");
+                    // console.log(data)
+                    for (var i = 0; i < data.length; i++) {
+                        var fm1 = `<div class="messageright tmp" style="text-align: right;">
+                        <div style="margin-top:20px;border-radius: 10px; margin-right: 20px">
+                            <img src="./static/img/2.png" width="30">
+                        </div>
+                        <div class="messagerightct">
+                            ${data[i][0]}
+                        </div>
+                    </div>`;
+                        console.log(fm1);
+                        sessrun.insertAdjacentHTML('beforeend', fm1);
+                        sessrun.scrollTop = sessrun.scrollHeight;
+
+
+                        var fm2 = `<div class="messageleft tmp">
+                        <div class="messageleftimg">
+                            <img src="./static/img/1.png" width="30">
+                        </div>
+                        <div class="messageleftct">
+                            ${data[i][1]}
+                        </div>
+                    </div>`;
+                        sessrun.insertAdjacentHTML('beforeend', fm2);
+                        sessrun.scrollTop = sessrun.scrollHeight;
+                    }
+                }
+            });
+
+
+        })
+    }
+    
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: 'http://localhost:8090/api/sessinfo',
+            success: function (data) {
+                console.log(data)
+                var navileft = document.getElementById('navileft');
+                for (var i = 0; i < data.length; i++) {
+                    var fm = `<div class="li onli" id="${data[i]['sessid']}" onclick="changedom(this)">
+                <div class="xin">${data[i]['name']}</div>
+                <div style="display: flex; justify-content: space-between">
+                    <div class="yitiao">共有${data[i]['length']}条对话</div>
+                </div>
+            </div>`
+                    var fm_ = `<div class="li" id="${data[i]['sessid']}" onclick="changedom(this)">
+                <div class="xin">${data[i]['name']}</div>
+                <div style="display: flex; justify-content: space-between">
+                    <div class="yitiao">共有${data[i]['length']}条对话</div>
+                </div>
+            </div>`
+                    if (i == data.length-1) {
+                        navileft.insertAdjacentHTML('afterbegin', fm);
+                    } else {
+                        navileft.insertAdjacentHTML('afterbegin', fm_);
+                    }
+
+                }
+
+                sessid_tag = document.getElementById("sessname")
+                sessid_tag.innerHTML = data[data.length-1]['name']
+                sessid = data[data.length-1]['sessid']
+                $(function () {
+
+                    var ready_var = $.ajax({
+                        type: "GET",
+                        url: 'http://localhost:8090/api/chat?sessid=' + sessid,
+                        success: function (data) {
+                            // ajaxLog('成功, 收到的数据: ' + JSON.stringify(data));
+                            // console.log(JSON.stringify(data));
+                            // 打印历史信息
+                            sessrun = document.getElementById("sesssrun");
+                            // console.log(data)
+                            for (var i = 0; i < data.length; i++) {
+                                var fm1 = `<div class="messageright tmp" style="text-align: right;">
+                        <div style="margin-top:20px;border-radius: 10px; margin-right: 20px">
+                            <img src="./static/img/2.png" width="30">
+                        </div>
+                        <div class="messagerightct">
+                            ${data[i][0]}
+                        </div>
+                    </div>`;
+                                console.log(fm1);
+                                sessrun.insertAdjacentHTML('beforeend', fm1);
+                                sessrun.scrollTop = sessrun.scrollHeight;
+
+
+                                var fm2 = `<div class="messageleft tmp">
+                        <div class="messageleftimg">
+                            <img src="./static/img/1.png" width="30">
+                        </div>
+                        <div class="messageleftct">
+                            ${data[i][1]}
+                        </div>
+                    </div>`;
+                                sessrun.insertAdjacentHTML('beforeend', fm2);
+                                sessrun.scrollTop = sessrun.scrollHeight;
+                            }
+                        }
+                    });
+
+                });
+            }
+        });
+
+
+    })
+
+
+    function inpclick() {
+        // window.alert("点击发送内容了");
+        var inp = document.getElementById("input_area").value;
+        // console.log(inp)
+        sessrun = document.getElementById("sesssrun");
+        var fm1 = `<div class="messageright tmp" style="text-align: right;">
+                        <div style="margin-top:20px;border-radius: 10px; margin-right: 20px">
+                            <img src="./static/img/2.png" width="30">
+                        </div>
+                        <div class="messagerightct">
+                            ${inp}
+                        </div>
+                    </div>`;
+        console.log(fm1);
+        sessrun.insertAdjacentHTML('beforeend', fm1);
+        sessrun.scrollTop = sessrun.scrollHeight;
+        document.getElementById("input_area").value = "";
+
+
+        onli = document.getElementsByClassName("onli")
+        sessid = onli[0].getAttribute("id")
+        console.log("设立时" + sessid)
+        var j_json = {"inp": inp}
+        console.log(j_json)
+        var ready_var = $.ajax({
+            dataType: 'json',
+            method: 'post',
+            url: 'http://localhost:8090/api/chat?sessid=' + sessid,
+            data: JSON.stringify(j_json),
+            success: function (data) {
+                // ajaxLog('成功, 收到的数据: ' + JSON.stringify(data));
+                console.log(JSON.stringify(data));
+                var rp = data['resp']
+                var fm2 = `<div class="messageleft tmp">
+                        <div class="messageleftimg">
+                            <img src="./static/img/1.png" width="30">
+                        </div>
+                        <div class="messageleftct">
+                            ${rp}
+                        </div>
+                    </div>`;
+                sessrun.insertAdjacentHTML('beforeend', fm2);
+                sessrun.scrollTop = sessrun.scrollHeight;
+            }
+        });
+    }
+
+</script>
+<body>
+<div id="app">
+    <div v-bind:class="left" :style="[{height:divHei+'px'}]">
+
+        <div style=" display: flex; position: relative " id="home">
+            <div style="margin-left: 20px">
+                <div style="color:white;font-family: 微软雅黑; font-size: 24px">AI-Chat</div>
+                <div style="color: white;font-family: 微软雅黑; font-size: 14px">您的AI伙伴</div>
+            </div>
+        </div>
+
+        <div class="addct" :style="[{height:lm+50+'px'}]" style="overflow: auto; " id="navileft"></div>
+
+
+        <div style="
+                    height: 1px;
+                    width: 258px;
+                    border: #e7f8ff 2px solid;
+                    border-radius: 10px;
+                    bottom: 150px;
+                    margin: 0 auto;
+                    margin-top: 0px;
+                    margin-left: 20px;
+                    margin-right: 20px;
+                    margin-bottom: 150px;
+                    background-color: #e7f8ff;
+                    /*bottom: 150px;*/
+                    ">
+        </div>
+
+        
+        <input style="position: absolute; bottom: 60px;width:260px; height: 42px; overflow: hidden; left: 20px; border-radius: 7px;text-align: center"
+               name="" id="search" placeholder="搜 索">
+
+
+        <script>
+            function newsess() {
+                $.ajax({
+                    type:"GET",
+                    url:'http://localhost:8090/api/sessinfo',
+                    success:function (data) {
+                    console.log(data)
+                    var navileft = document.getElementById('navileft');
+
+                    var fm = `<div class="li onli" id="xx202300${56 + data.length}" onclick="changedom(this)">
+                        <div class="xin">会话【2023】00${0 + data.length}</div>
+                        <div style="display: flex; justify-content: space-between">
+                            <div class="yitiao">共有0条对话</div>
+                        </div>
+                    </div>`
+                    navileft.insertAdjacentHTML('afterbegin', fm);
+                }
+                });
+                $(".li").removeClass("onli");
+                $(this).addClass('onli');
+                $('.ow').hide();
+                $("div.tmp").remove()
+                $('.dom').show("slow")
+                sessid_tag = document.getElementById("sessname")
+                onli = document.getElementsByClassName("onli")
+                sessid = onli[0].getAttribute('id')
+                sessid_tag.innerHTML = `会话【2023】00${sessid.slice(-2)}`
+
+                $(function () {
+
+                    var ready_var = $.ajax('http://localhost:8090/api/chat?sessid=' + sessid, {
+                        method: 'get'
+                    }).success(function (data) {
+                        // ajaxLog('成功, 收到的数据: ' + JSON.stringify(data));
+                        // console.log(JSON.stringify(data));
+                        // 打印历史信息
+                        sessrun = document.getElementById("sesssrun");
+                        // console.log(data)
+                        for (var i = 0; i < data.length; i++) {
+                            var fm1 = `<div class="messageright tmp" style="text-align: right;">
+                        <div style="margin-top:20px;border-radius: 10px; margin-right: 20px">
+                            <img src="./static/img/2.png" width="30">
+                        </div>
+                        <div class="messagerightct">
+                            ${data[i][0]}
+                        </div>
+                    </div>`;
+                            console.log(fm1);
+                            sessrun.insertAdjacentHTML('beforeend', fm1);
+                            sessrun.scrollTop = sessrun.scrollHeight;
+
+
+                            var fm2 = `<div class="messageleft tmp">
+                        <div class="messageleftimg">
+                            <img src="./static/img/1.png" width="30">
+                        </div>
+                        <div class="messageleftct">
+                            ${data[i][1]}
+                        </div>
+                    </div>`;
+                            sessrun.insertAdjacentHTML('beforeend', fm2);
+                            sessrun.scrollTop = sessrun.scrollHeight;
+                        }
+                    })
+
+
+                    $('.dom').show("slow");
+                })
+
+
+            }
+        </script>
+        <div style="position: absolute; bottom: 0px;width:300px; height: 50px; overflow: hidden" onclick="newsess()">
+            <div style="display: flex; justify-content: space-between">
+                <div class="szlt">
+                    <div style="padding-top: 10px;margin-left: 14px; margin-right: 14px">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16"
+                             height="16" fill="none">
+                            <defs>
+                                <path id="settings_svg__a" d="M0 0h16v16H0z"></path>
+                            </defs>
+                            <g>
+                                <mask id="settings_svg__b" fill="#fff">
+                                    <use xlink:href="#settings_svg__a"></use>
+                                </mask>
+                                <g mask="url(#settings_svg__b)">
+                                    <path transform="translate(1.333 2.333)"
+                                          d="M13.33 5.67 10 0H3.33L0 5.67l3.33 5.66H10l3.33-5.66Z"
+                                          style="stroke: rgb(51, 51, 51); stroke-width: 1.33333; stroke-opacity: 1; stroke-dasharray: 0, 0;"></path>
+                                    <path transform="translate(6.333 6.333)"
+                                          d="M3.33 1.67C3.33.75 2.59 0 1.67 0 .75 0 0 .75 0 1.67c0 .92.75 1.66 1.67 1.66.92 0 1.66-.74 1.66-1.66Z"
+                                          style="stroke: rgb(51, 51, 51); stroke-width: 1.33333; stroke-opacity: 1; stroke-dasharray: 0, 0;"></path>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <div style="margin-top: 7px; margin-left: 14px;font-size: 16px" class="add"> 新&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;的&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;会&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话</div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div v-bind:class="right" :style="[{height:he+'px'}]">
+        <div :style="[{height:he+'px'}]" style="border-left: #4f4f4f 3px solid;"></div>
+        <div class="dom ow" style="width: 100%" id="sessbdiv">
+            <div :style="[{height:he+'px'}]" class="message">
+                <div class="messagetop">
+                    <div>
+                        <div class="messagetoptitle"><strong id="sessname">123</strong></div>
+                    </div>
+                </div>
+                <div class="onmessage" style="overflow: auto; " :style="[{height:ct+'px'}]" id="sesssrun">
+                    <div class="messageleft">
+                        <div class="messageleftimg">
+                            <img src="./static/img/1.png" width="30">
+                        </div>
+                        <div class="messageleftct">
+                            你好，我是AI Chat,您的AI伙伴
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <textarea placeholder="请输入您的问题" class="answer" style="resize:none !important;" id="input_area"></textarea>
+            <button class="send" id="inpsend" onclick="inpclick()">Enter</button>
+        </div>
+
+    </div>
+
+
+</div>
+
+<script src="./static/js/index.js"></script>
+</body>
+
+</html>
